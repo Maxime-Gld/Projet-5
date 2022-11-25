@@ -33,5 +33,4 @@ fetch("http://localhost:3000/api/products/")
 // Si il y a une erreur de recupération des produits
     .catch(function(err) {
         alert("Une erreur est survenue : \n .catch : " + err);
-
-})
+    })
