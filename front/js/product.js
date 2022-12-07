@@ -69,7 +69,7 @@ let quantity = document.getElementById("quantity");
     function getCart() {
         let cart = localStorage.getItem("cart")
         // if = si le panier est vide renvoi [] sinon renvoi le panier
-        if (cart == null) {
+        if (cart == undefined) {
             return [];
         } else {
             return JSON.parse(cart);
@@ -92,11 +92,11 @@ let quantity = document.getElementById("quantity");
         }
 
         else {
-            // recupere les articles stocker et verifie si il y sont deja
+            // recupère les articles stockés et verifie si ils y sont déjà
             let cart = getCart()
             let foundArticle = cart.find(a => a._id == article._id && a.colors == article.colors)
 
-            // si deja présent augmente la quantité sinon ajoute un nouvel article
+            // si déja présent augmente la quantité sinon ajoute un nouvel article
             if (foundArticle != undefined) {
                 foundArticle.quantity = parseInt(article.quantity)+parseInt(foundArticle.quantity);
 

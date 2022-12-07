@@ -1,3 +1,8 @@
+/* Dans un premier temps on defini tout les fonctions nous permettant de pouvoir afficher les articles sur la page
+panier ou changer directement les articles dans le localStorage */
+
+
+
 // sauvegarder le localstorage
 function saveCart(cart) {
   localStorage.setItem("cart", JSON.stringify(cart));
@@ -5,7 +10,7 @@ function saveCart(cart) {
 
 // Recuperer le panier stocker dans le localstorage
 function getCart() {
-  let cart = localStorage.getItem("cart")
+  let cart = localStorage.getItem("cart");
   if(cart == null) {
       return [];
   } else {
@@ -13,21 +18,30 @@ function getCart() {
   }
 }
 
+function getCart1() {
+  let cart = localStorage.getItem("cart");
+  return (cart != null) ? JSON.parse(cart) : [];
+}
+
 // supprimer un article du papnier
-function removeArticle(id, colors) {
+function removeArticle(article) {
   let cart = getCart();
-  cart = cart.filter(a => a.id != id && a.colors != colors);
-  saveCart(cart)
+  foundArticle = cart.filter(a => a.id != article.dataset.id && a.colors != article.dataset.color);
+  saveCart();
 }
 
 
 
 // Recuperer chaque article present dans le panier (des que l'on recoit le panier)
-async function getAllArticle() {
+async function displayAllArticle() {
   // on attend le resultat de getCart()
   const cart = await getCart();
-  let allCartItems = "";
 
+  let allCartItems = "";
+  if (cart == []) {
+    alert("votre panier est vide");
+  }
+  
   // pour chaque article dans le panier on effectue une requete (get) pour recuperer le details
   for (let article of cart) {
 
@@ -79,14 +93,24 @@ async function getAllArticle() {
   }
 }
 // enfin on appelle la fonction pour afficher le panier
-getAllArticle();
+displayAllArticle();
 
 
-// --------------- POUR AFFICHER LE NOMBRE TOTAL D'ARTICLE ------------
+
+
+/* ----------------------------- La deuxieme étape -------------------------------
+pouvoir calculer, à partir des articles sur la page panier, la quantité d'article ainsi que leur prix total */
+
+
+
+
+
+//--------------- POUR AFFICHER LE NOMBRE TOTAL D'ARTICLE ------------
+
 
 
 // on defini de maniere asynchrone la fonction permettant l'affichage de la quantité total
-async function getNumberArticle() {
+async function displayNumberArticle() {
 
   // on attend le resultat de getCart()
   let cart = await getCart();
@@ -102,12 +126,24 @@ async function getNumberArticle() {
 }
 
 // on appelle la fonction pour afficher son résultat
-getNumberArticle()
+displayNumberArticle()
+
+
+
+
+
+
+
+
 
 // ------------- POUR AFFICHER LE PRIX TOTAL --------------
 
+
+
+
+
 // on defini de maniere asynchrone la fonction permettant l'affichage du prix total
-async function getTotalPrice() {
+async function displayTotalPrice() {
 
   // on attend le resultat de getCart()
   let cart = await getCart();
@@ -143,4 +179,76 @@ async function getTotalPrice() {
 }
 
 // on appelle la variable pour afficher le résultat
-getTotalPrice();
+displayTotalPrice();
+
+
+
+
+
+
+
+
+/* ------------------------------------ 3eme etape ----------------------------------
+Pouvoir supprimer ou changer la quantité d'un article depuis la page panier */
+
+
+let articleCollection = document.getElementsByTagName("article");
+let deleteButtonCollection = document.getElementsByClassName("deleteItem");
+let quantityCollection = document.getElementsByClassName("itemQuantity");
+let itemArticle = document.querySelectorAll(".cart__item");
+
+
+// modifier la quantité 
+
+function changeQuantity(article, quantity) {
+  // condition avant ajout au panier
+  if (quantity.value < 1 || quantity.value > 100) {
+      alert("erreur sur la quantité \nselon stock disponible (1-100)")
+  }
+  else {
+      // recupere les articles stockés et verifie si ils y sont deja
+      let cart = getCart()
+      let foundArticle = cart.find(a => a.id == article.dataset.id && a.colors == article.dataset.color)
+
+      // change la quantité de l'article
+      if (foundArticle != undefined) {
+          foundArticle.quantity = parseInt(quantity.value);
+          if (foundArticle.quantity > 100) { 
+                  foundArticle.quantity = 100;
+                  alert("stock limité à 100");
+          }
+      saveCart(cart)
+      alert("changement de quantité effectué")
+    }
+  }
+}
+
+// ajoute un Event "change" sur les input
+setTimeout(function addEventChange() {
+  for (i in quantityCollection) {
+    let article = quantityCollection.item(i).closest("article");
+    quantityCollection.item(i).addEventListener("change", function(e) {
+      e.preventDefault();
+      e.stopImmediatePropagation();
+      changeQuantity(article, quantityCollection.item(i));
+      displayNumberArticle();
+      displayTotalPrice(); 
+    })
+  }
+}, 1000)
+
+
+
+setTimeout(function addEventDelete() {
+  for (i in deleteButtonCollection) {
+    let article = deleteButtonCollection.item(i).closest("article");
+    console.log(article);
+    deleteButtonCollection.item(i).addEventListener("click", function(e) {
+      e.preventDefault();
+      e.stopImmediatePropagation();
+      console.log("l'article " +article.dataset.id +" de couleur " +article.dataset.color +" à bien été supprimer")
+      removeArticle(article);
+      displayAllArticle();
+    })
+  }
+}, 1000)
