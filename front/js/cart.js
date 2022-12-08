@@ -18,16 +18,19 @@ function getCart() {
   }
 }
 
-function getCart1() {
+/* function getCart1() {
   let cart = localStorage.getItem("cart");
   return (cart != null) ? JSON.parse(cart) : [];
-}
+} */
 
 // supprimer un article du papnier
+
+
+
 function removeArticle(article) {
   let cart = getCart();
-  foundArticle = cart.filter(a => a.id != article.dataset.id && a.colors != article.dataset.color);
-  saveCart();
+  cart = cart.filter(a => (a.id !== article.dataset.id || a.colors != article.dataset.color));
+  saveCart(cart);
 }
 
 
@@ -99,7 +102,7 @@ displayAllArticle();
 
 
 /* ----------------------------- La deuxieme étape -------------------------------
-pouvoir calculer, à partir des articles sur la page panier, la quantité d'article ainsi que leur prix total */
+pouvoir calculer, à partir des articles dans le local storage, la quantité d'article ainsi que leur prix total */
 
 
 
@@ -192,11 +195,10 @@ displayTotalPrice();
 Pouvoir supprimer ou changer la quantité d'un article depuis la page panier */
 
 
-let articleCollection = document.getElementsByTagName("article");
 let deleteButtonCollection = document.getElementsByClassName("deleteItem");
 let quantityCollection = document.getElementsByClassName("itemQuantity");
 let itemArticle = document.querySelectorAll(".cart__item");
-
+let name = document.getElementsByTagName("h2");
 
 // modifier la quantité 
 
@@ -225,30 +227,31 @@ function changeQuantity(article, quantity) {
 
 // ajoute un Event "change" sur les input
 setTimeout(function addEventChange() {
-  for (i in quantityCollection) {
+  for (let i in quantityCollection) {
     let article = quantityCollection.item(i).closest("article");
     quantityCollection.item(i).addEventListener("change", function(e) {
       e.preventDefault();
       e.stopImmediatePropagation();
       changeQuantity(article, quantityCollection.item(i));
       displayNumberArticle();
-      displayTotalPrice(); 
+      displayTotalPrice();
     })
   }
-}, 1000)
+}, 1500)
 
 
 
 setTimeout(function addEventDelete() {
-  for (i in deleteButtonCollection) {
-    let article = deleteButtonCollection.item(i).closest("article");
-    console.log(article);
-    deleteButtonCollection.item(i).addEventListener("click", function(e) {
-      e.preventDefault();
-      e.stopImmediatePropagation();
-      console.log("l'article " +article.dataset.id +" de couleur " +article.dataset.color +" à bien été supprimer")
-      removeArticle(article);
-      displayAllArticle();
-    })
-  }
-}, 1000)
+    for (let i in deleteButtonCollection) {
+      let article = deleteButtonCollection.item(i).closest("article");
+      let name = document.getElementsByTagName("h2").item(i);
+      deleteButtonCollection.item(i).addEventListener("click", function(e) {
+        e.preventDefault();
+        e.stopImmediatePropagation();
+        removeArticle(article);
+        location.reload();
+        
+        alert(`l'article ${name.outerText} de couleur ${article.dataset.color} a bien été supprimé`);
+      })
+    }
+}, 1500)
