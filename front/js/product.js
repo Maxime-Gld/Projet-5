@@ -94,8 +94,8 @@ let quantity = document.getElementById("quantity");
         else {
             // recupère les articles stockés et verifie si ils y sont déjà
             let cart = getCart()
-            let foundArticle = cart.find(a => a._id == article._id && a.colors == article.colors)
-
+            let foundArticle = cart.find(a => (a.id === article.id && a.colors == article.colors));
+            console.log(foundArticle)
             // si déja présent augmente la quantité sinon ajoute un nouvel article
             if (foundArticle != undefined) {
                 foundArticle.quantity = parseInt(article.quantity)+parseInt(foundArticle.quantity);
