@@ -225,13 +225,19 @@ function changeQuantity(article, quantity) {
   }
 }
 
-// ajoute un Event "change" sur les input
+// ajoute un Event "change" sur 'input .itemQuantity'
 setTimeout(function addEventChange() {
   for (let i in quantityCollection) {
+
+    // pour chaque input => selection de son article
     let article = quantityCollection.item(i).closest("article");
+
+    // ajout de l'event
     quantityCollection.item(i).addEventListener("change", function(e) {
       e.preventDefault();
       e.stopImmediatePropagation();
+
+      // on appele la fonction qui change la quantité puis on actualise le total des articles et le prix total de la commande
       changeQuantity(article, quantityCollection.item(i));
       displayNumberArticle();
       displayTotalPrice();
@@ -240,17 +246,26 @@ setTimeout(function addEventChange() {
 }, 1500)
 
 
-
+// ajoute un Event "click" qui permet de suprimer un article sur 'p .deleteItem'
 setTimeout(function addEventDelete() {
     for (let i in deleteButtonCollection) {
+
+      // pour chaque 'p .deleteItem' => selection de l'article pour recuperer les data-id et data-color
       let article = deleteButtonCollection.item(i).closest("article");
+
+      // on récupère le nom du produit
       let name = document.getElementsByTagName("h2").item(i);
+
+      // ajout de l'event
       deleteButtonCollection.item(i).addEventListener("click", function(e) {
         e.preventDefault();
         e.stopImmediatePropagation();
+
+        // appelle de la fonction qui permet de supprimer un article puis on actualise la page
         removeArticle(article);
         location.reload();
         
+        // on affiche une alerte pour indiquer quel produit a été supprimé
         alert(`l'article ${name.outerText} de couleur ${article.dataset.color} a bien été supprimé`);
       })
     }
