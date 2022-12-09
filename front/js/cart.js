@@ -246,7 +246,9 @@ setTimeout(function addEventChange() {
 }, 1500)
 
 
-// ajoute un Event "click" qui permet de suprimer un article sur 'p .deleteItem'
+// ajoute un Event "click" qui permet de suprimer un article sur 'p .deleteItem' si c'est confirmer
+
+
 setTimeout(function addEventDelete() {
     for (let i in deleteButtonCollection) {
 
@@ -260,13 +262,110 @@ setTimeout(function addEventDelete() {
       deleteButtonCollection.item(i).addEventListener("click", function(e) {
         e.preventDefault();
         e.stopImmediatePropagation();
+        let isExecuted = confirm("Etes vous sûr de vouloir supprimer ce produit ?")
+        if (isExecuted == true) {
+          // appelle de la fonction qui permet de supprimer un article puis on actualise la page
+          removeArticle(article);
+          location.reload();
 
-        // appelle de la fonction qui permet de supprimer un article puis on actualise la page
-        removeArticle(article);
-        location.reload();
-        
+          
         // on affiche une alerte pour indiquer quel produit a été supprimé
-        alert(`l'article ${name.outerText} de couleur ${article.dataset.color} a bien été supprimé`);
+        alert(`L'article ${name.outerText} de couleur ${article.dataset.color} a bien été supprimé`);
+        }
       })
     }
 }, 1500)
+
+
+
+
+
+/* -------------------------------------- VALIDATION DU FORMULAIRE ------------------------------ */
+// définir les variable ciblant les inputs du HTML
+
+let firstName = document.getElementById("firstName");
+let lastName = document.getElementById("lastName");
+let address = document.getElementById("address");
+let city = document.getElementById("city");
+let email = document.getElementById("email");
+
+
+
+// definir les fonctions verifiant les entrées des inputs et les intégrer aux HTML
+
+
+// vérifie nom, prénom, ville
+
+function isValidName(input) {
+return /^[A-Za-zÀ-ÖØ-öø-ÿ\s'-]{2,30}$/i.test(input);
+}
+
+
+
+// vérifie email
+function isValidEmail(input) {
+  return  /^[0-9a-z._-]+@{1}[0-9a-z.-]{2,}[.]{1}[a-z]{2,5}$/i.test(input);
+}
+
+// vérifie adresse
+function isValidAddress(input) {
+  return /^[a-zA-Z0-9À-ÖØ-öø-ÿ,'-\s]*$/i.test(input);
+}
+
+
+
+
+// on ajoute les event "change" sur chaque input pour verifier la validité des entrées
+
+
+// pour le Prénom
+firstName.addEventListener("change", function() {
+  let msgErr = document.getElementById("firstNameErrorMsg")
+  if (isValidName(firstName.value) == false) {
+    msgErr.innerText = `${firstName.value} n'est pas un prénom valide`;
+  } else {
+    msgErr.textContent = "Prénom valide";
+  }
+})
+
+
+// pour le nom
+lastName.addEventListener("change", function() {
+  let msgErr = document.getElementById("lastNameErrorMsg");
+  if (isValidName(lastName.value) == false) {
+    msgErr.innerText = `${lastName.value} n'est pas un nom valide`;
+  } else {
+    msgErr.textContent = "Nom valide";
+  }
+})
+
+
+// pour la ville
+city.addEventListener("change", function() {
+  let msgErr = document.getElementById("cityErrorMsg");
+  if (isValidName(city.value) == false) {
+    msgErr.innerText = `${city.value} n'est pas une ville valide`;
+  } else {
+    msgErr.textContent = `Ville valide`
+  }
+})
+
+// pour l'adresse
+address.addEventListener("change", function() {
+  let msgErr = document.getElementById("addressErrorMsg");
+  if (isValidAddress(address.value) == false) {
+    msgErr.innerText = `${address.value} n'est pas une adresse valide`
+  } else {
+    msgErr.innerText = "Adresse valide"
+  }
+})
+
+// pour l'email
+email.addEventListener("change", function() {
+  let msgErr = document.getElementById("emailErrorMsg");
+  if (isValidEmail(email.value) == false) {
+    msgErr.innerText = `${email.value} n'est pas une email valide`
+  } else {
+    msgErr.innerText = "email valide"
+  }
+})
