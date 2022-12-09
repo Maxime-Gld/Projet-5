@@ -283,11 +283,11 @@ setTimeout(function addEventDelete() {
 /* -------------------------------------- VALIDATION DU FORMULAIRE ------------------------------ */
 // définir les variable ciblant les inputs du HTML
 
-let firstName = document.getElementById("firstName");
-let lastName = document.getElementById("lastName");
-let address = document.getElementById("address");
-let city = document.getElementById("city");
-let email = document.getElementById("email");
+const firstName = document.getElementById("firstName");
+const lastName = document.getElementById("lastName");
+const address = document.getElementById("address");
+const city = document.getElementById("city");
+const email = document.getElementById("email");
 
 
 
@@ -350,6 +350,7 @@ city.addEventListener("change", function() {
   }
 })
 
+
 // pour l'adresse
 address.addEventListener("change", function() {
   let msgErr = document.getElementById("addressErrorMsg");
@@ -360,12 +361,87 @@ address.addEventListener("change", function() {
   }
 })
 
+
+
 // pour l'email
 email.addEventListener("change", function() {
   let msgErr = document.getElementById("emailErrorMsg");
   if (isValidEmail(email.value) == false) {
     msgErr.innerText = `${email.value} n'est pas une email valide`
   } else {
-    msgErr.innerText = "email valide"
+    msgErr.innerText = "Email valide"
   }
 })
+
+
+
+
+/* -------------------------------------------- validé la commande et envoi à l'API ---------------------------------- */
+
+let products = []
+function getCartId() {
+  let cart = getCart();
+  for(article of cart) {
+    products.push(article.id);
+  }
+  return products;
+}
+
+// fonction pour envoyer les données a l'API
+function sendcommand(e) {
+  e.preventDefault();
+  e.stopImmediatePropagation();
+
+  // condition avant récupération si c'est ok récupérer les infos du formulaire
+  if (isValidEmail(email.value) == false || isValidAddress(address.value) == false ||
+   isValidName(city.value) == false || isValidName(lastName.value) == false || isValidName(firstName.value) == false) {
+    alert("une erreur dans le formulaire à été détectée \nveuillez vérifier vos informations")
+   } else {
+
+
+    // création de l'objet contact
+    let contact = {
+      firstName: firstName.value,
+      lastName: lastName.value,
+      address: address.value,
+      city: city.value,
+      email: email.value,
+    }
+    
+
+    // appelle de la fonction qui permet de creer le tableau products
+    getCartId();
+
+    // on stocke dans uen variable les valeur nécéssaire pour l'envoi à l'API
+    let orderProducts = {contact, products}
+
+    // faire une requete POST pour envoyer la commande à l'API
+    fetch("http://localhost:3000/api/products/order", {
+      method: "POST",
+      headers: {
+        'Accept': 'application/json', 
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(orderProducts)
+    })
+
+    .then(function(res) {
+      if (res.ok) {
+      return res.json();
+      }
+    })
+
+    .then(function(value) {
+      console.log(value.orderId)
+    })
+
+
+    .catch(function(err) {
+      alert("un problème est survenue \n" +err)
+    })
+  }
+}
+
+
+// on ajout Event envoi du formulaire sur l'input !
+document.getElementById("order").addEventListener("click", sendcommand);
