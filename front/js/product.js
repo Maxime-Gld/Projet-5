@@ -18,7 +18,7 @@ fetch('http://localhost:3000/api/products/'+numberId)
 
 // 3eme etape
     .then (function(value) {
-        document.querySelector('.item__img').innerHTML = `<img src="${value.imageUrl}" alt="${value.altTxt}"></img>`
+        document.querySelector('.item__img').innerHTML = `<img src="${value.imageUrl}" alt="${value.altTxt}">`
         document.getElementById('title').textContent = `${value.name}`
         document.getElementById('price').textContent = `${value.price}`
         document.getElementById('description').textContent = `${value.description}`
