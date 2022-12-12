@@ -295,12 +295,9 @@ const email = document.getElementById("email");
 
 
 // vérifie nom, prénom, ville
-
 function isValidName(input) {
 return /^[A-Za-zÀ-ÖØ-öø-ÿ\s'-]{2,30}$/i.test(input);
 }
-
-
 
 // vérifie email
 function isValidEmail(input) {
@@ -391,54 +388,57 @@ function getCartId() {
 function sendcommand(e) {
   e.preventDefault();
   e.stopImmediatePropagation();
+  let isExecuted = confirm("Etes vous sûr de vouloir valider votre commande ?")
+  if(isExecuted == true) {
+    // condition avant récupération si c'est ok récupérer les infos du formulaire
+    if (isValidEmail(email.value) == false || isValidAddress(address.value) == false ||
+    isValidName(city.value) == false || isValidName(lastName.value) == false || isValidName(firstName.value) == false) {
+      alert("une erreur dans le formulaire à été détectée \nveuillez vérifier vos informations")
+    } else {
 
-  // condition avant récupération si c'est ok récupérer les infos du formulaire
-  if (isValidEmail(email.value) == false || isValidAddress(address.value) == false ||
-   isValidName(city.value) == false || isValidName(lastName.value) == false || isValidName(firstName.value) == false) {
-    alert("une erreur dans le formulaire à été détectée \nveuillez vérifier vos informations")
-   } else {
 
-
-    // création de l'objet contact
-    let contact = {
-      firstName: firstName.value,
-      lastName: lastName.value,
-      address: address.value,
-      city: city.value,
-      email: email.value,
-    }
-    
-
-    // appelle de la fonction qui permet de creer le tableau products
-    getCartId();
-
-    // on stocke dans uen variable les valeur nécéssaire pour l'envoi à l'API
-    let orderProducts = {contact, products}
-
-    // faire une requete POST pour envoyer la commande à l'API
-    fetch("http://localhost:3000/api/products/order", {
-      method: "POST",
-      headers: {
-        'Accept': 'application/json', 
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(orderProducts)
-    })
-
-    .then(function(res) {
-      if (res.ok) {
-      return res.json();
+      // création de l'objet contact
+      let contact = {
+        firstName: firstName.value,
+        lastName: lastName.value,
+        address: address.value,
+        city: city.value,
+        email: email.value,
       }
-    })
+      
 
-    .then(function(value) {
-      console.log(value.orderId)
-    })
+      // appelle de la fonction qui permet de creer le tableau products-ID
+      getCartId();
+
+      // on stocke dans uen variable les valeur nécéssaire pour l'envoi à l'API
+      let orderProducts = {contact, products}
+
+      // faire une requete POST pour envoyer la commande à l'API
+      fetch("http://localhost:3000/api/products/order", {
+        method: "POST",
+        headers: {
+          'Accept': 'application/json', 
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(orderProducts)
+      })
+
+      .then(function(res) {
+        if (res.ok) {
+        return res.json();
+        }
+      })
+
+      .then(function(value) {
+        console.log(value.orderId)
+        window.location.href=`confirmation.html?orderId=${value.orderId}`
+      })
 
 
-    .catch(function(err) {
-      alert("un problème est survenue \n" +err)
-    })
+      .catch(function(err) {
+        alert("un problème est survenue \n" +err)
+      })
+    }
   }
 }
 
