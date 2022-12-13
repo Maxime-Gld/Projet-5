@@ -376,6 +376,7 @@ email.addEventListener("change", function() {
 /* -------------------------------------------- validé la commande et envoi à l'API ---------------------------------- */
 
 let products = []
+
 function getCartId() {
   let cart = getCart();
   for(article of cart) {
@@ -384,60 +385,77 @@ function getCartId() {
   return products;
 }
 
+// fonction pour recupérer les données du formulaire
+let contact
+function getContact() {
+  contact = {
+    firstName: firstName.value,
+    lastName: lastName.value,
+    address: address.value,
+    city: city.value,
+    email: email.value,
+  }
+  return contact;
+}
+
 // fonction pour envoyer les données a l'API
 function sendcommand(e) {
+
   e.preventDefault();
   e.stopImmediatePropagation();
+
   let isExecuted = confirm("Etes vous sûr de vouloir valider votre commande ?")
+
   if(isExecuted == true) {
-    // condition avant récupération si c'est ok récupérer les infos du formulaire
+
+    // condition avant récupération si c'est ok récupérer les infos du formulaire sinon erreur
     if (isValidEmail(email.value) == false || isValidAddress(address.value) == false ||
     isValidName(city.value) == false || isValidName(lastName.value) == false || isValidName(firstName.value) == false) {
+
       alert("une erreur dans le formulaire à été détectée \nveuillez vérifier vos informations")
+
     } else {
 
 
-      // création de l'objet contact
-      let contact = {
-        firstName: firstName.value,
-        lastName: lastName.value,
-        address: address.value,
-        city: city.value,
-        email: email.value,
-      }
+      // appelle de la fonction permettant de recupérer les donnée du formulaire
+      getContact();
       
 
       // appelle de la fonction qui permet de creer le tableau products-ID
       getCartId();
+      if (products.length == 0) {
+        alert("votre panier est vide")
+      } else {
 
-      // on stocke dans uen variable les valeur nécéssaire pour l'envoi à l'API
-      let orderProducts = {contact, products}
+        // on stocke dans uen variable les valeur nécéssaire pour l'envoi à l'API
+        let orderProducts = {contact, products};
 
-      // faire une requete POST pour envoyer la commande à l'API
-      fetch("http://localhost:3000/api/products/order", {
-        method: "POST",
-        headers: {
-          'Accept': 'application/json', 
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(orderProducts)
-      })
+        // faire une requete POST pour envoyer la commande à l'API
+        fetch("http://localhost:3000/api/products/order", {
+          method: "POST",
+          headers: {
+            'Accept': 'application/json', 
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(orderProducts)
+        })
 
-      .then(function(res) {
-        if (res.ok) {
-        return res.json();
-        }
-      })
+        .then(function(res) {
+          if (res.ok) {
+          return res.json();
+          }
+        })
 
-      .then(function(value) {
-        console.log(value.orderId)
-        window.location.href=`confirmation.html?orderId=${value.orderId}`
-      })
+        .then(function(value) {
+          console.log(value.orderId)
+          window.location.href=`confirmation.html?orderId=${value.orderId}`
+        })
 
 
-      .catch(function(err) {
-        alert("un problème est survenue \n" +err)
-      })
+        .catch(function(err) {
+          alert("un problème est survenue \n" +err)
+        })
+      }
     }
   }
 }
