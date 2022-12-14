@@ -296,12 +296,12 @@ const email = document.getElementById("email");
 
 // vérifie nom, prénom, ville
 function isValidName(input) {
-return /^[A-Za-zÀ-ÖØ-öø-ÿ\s'-]{2,30}$/i.test(input);
+return /^[A-Za-zÀ-ÖØ-öø-ÿ\s'-]{2,40}$/i.test(input);
 }
 
 // vérifie email
 function isValidEmail(input) {
-  return  /^[0-9a-z._-]+@{1}[0-9a-z.-]{2,}[.]{1}[a-z]{2,5}$/i.test(input);
+  return  /^[0-9a-z._-]+@{1}[0-9a-z-]{2,}[.]{1}[a-z]{2,5}$/i.test(input);
 }
 
 // vérifie adresse
@@ -319,7 +319,7 @@ function isValidAddress(input) {
 firstName.addEventListener("change", function() {
   let msgErr = document.getElementById("firstNameErrorMsg")
   if (isValidName(firstName.value) == false) {
-    msgErr.innerText = `${firstName.value} n'est pas un prénom valide`;
+    msgErr.innerText = `${firstName.value} contient des caractères non alphabétiques`;
   } else {
     msgErr.textContent = "Prénom valide";
   }
@@ -330,7 +330,7 @@ firstName.addEventListener("change", function() {
 lastName.addEventListener("change", function() {
   let msgErr = document.getElementById("lastNameErrorMsg");
   if (isValidName(lastName.value) == false) {
-    msgErr.innerText = `${lastName.value} n'est pas un nom valide`;
+    msgErr.innerText = `${lastName.value} contient des caractères non alphabétiques`;
   } else {
     msgErr.textContent = "Nom valide";
   }
@@ -341,7 +341,7 @@ lastName.addEventListener("change", function() {
 city.addEventListener("change", function() {
   let msgErr = document.getElementById("cityErrorMsg");
   if (isValidName(city.value) == false) {
-    msgErr.innerText = `${city.value} n'est pas une ville valide`;
+    msgErr.innerText = `${city.value} contient des caractères non alphabétiques`;
   } else {
     msgErr.textContent = `Ville valide`
   }
@@ -352,7 +352,7 @@ city.addEventListener("change", function() {
 address.addEventListener("change", function() {
   let msgErr = document.getElementById("addressErrorMsg");
   if (isValidAddress(address.value) == false) {
-    msgErr.innerText = `${address.value} n'est pas une adresse valide`
+    msgErr.innerText = `format d'adresse accepté, exemple : 6 Rue Saint-Jean`
   } else {
     msgErr.innerText = "Adresse valide"
   }
@@ -364,7 +364,7 @@ address.addEventListener("change", function() {
 email.addEventListener("change", function() {
   let msgErr = document.getElementById("emailErrorMsg");
   if (isValidEmail(email.value) == false) {
-    msgErr.innerText = `${email.value} n'est pas une email valide`
+    msgErr.innerText = `veuillez saisir une adresse au format : exemple@domaine.com`
   } else {
     msgErr.innerText = "Email valide"
   }
@@ -447,7 +447,6 @@ function sendcommand(e) {
         })
 
         .then(function(value) {
-          console.log(value.orderId)
           window.location.href=`confirmation.html?orderId=${value.orderId}`
         })
 
