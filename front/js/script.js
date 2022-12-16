@@ -1,4 +1,6 @@
-// affichage des produits dans la page d'acceuil
+// ---------------- affichage des produits dans la page d'accueil ------------------------
+
+
 
 // fonction permettant de générer le HTML pour afficher un produit
 function createElt(item) {
@@ -29,7 +31,7 @@ function createElt(item) {
 
 
 
-// on recupère les données dans l'API avec un fetch et on verifie que tout se passe bien
+// on recupère les données dans l'API avec un fetch et on vérifie la promesse
 fetch("http://localhost:3000/api/products/")
     .then(function(res) {
         if (res.ok) { 
@@ -38,7 +40,7 @@ fetch("http://localhost:3000/api/products/")
     })
 
 
-// si le fetch c'est bien passé on appel la fonction pour afficher chaque produit sur la page d'acceuil
+// si le fetch c'est bien passé on utilise la fonction pour afficher chaque produit sur la page d'accueil
     .then(function(value) {
         for (let item of value) {
             createElt(item);
