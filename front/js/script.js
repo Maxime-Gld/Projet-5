@@ -21,7 +21,6 @@ function createElt(item) {
         title.textContent = item.name;
         document.querySelector("#items article").append(title);
 
-
     let description = document.createElement("p");
         description.classList.add("productDescription");
         description.textContent = item.description;
@@ -39,14 +38,12 @@ fetch("http://localhost:3000/api/products/")
         }
     })
 
-
 // si le fetch c'est bien passé on utilise la fonction pour afficher chaque produit sur la page d'accueil
     .then(function(value) {
         for (let item of value) {
             createElt(item);
         }
     })
-
 
 // Si il y a une erreur de recupération des produits on affiche un message
     .catch(function(err) {

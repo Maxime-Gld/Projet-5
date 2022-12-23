@@ -3,12 +3,12 @@
 // 3eme etape - insérer les valeurs du produits dans le DOM
 
 
-// 1ere etape
+// 1ere etape - recupérer l'id d'un produit avec URLSEARCHPARAMS
 let url = new URL(window.location.href);
 let numberId = url.searchParams.get("id");
 
 
-// 2eme etape
+// 2eme etape - recupérer le produit a afficher a l'aide de son ID
 fetch('http://localhost:3000/api/products/'+numberId)
     .then (function(res) {
         if(res.ok) {
@@ -16,14 +16,24 @@ fetch('http://localhost:3000/api/products/'+numberId)
         }
     })
 
-// 3eme etape
+// 3eme etape - insérer les valeurs du produits dans le DOM
     .then (function(value) {
-        document.querySelector('.item__img').innerHTML = `<img src="${value.imageUrl}" alt="${value.altTxt}">`
-        document.getElementById('title').textContent = `${value.name}`
-        document.getElementById('price').textContent = `${value.price}`
-        document.getElementById('description').textContent = `${value.description}`
+        document.querySelector('.item__img')
+        .innerHTML = `<img src="${value.imageUrl}" alt="${value.altTxt}">`
+
+        document.getElementById('title')
+        .textContent = `${value.name}`
+
+        document.getElementById('price')
+        .textContent = `${value.price}`
+
+        document.getElementById('description')
+        .textContent = `${value.description}`
+
         let colors = value.colors
+
         let allColors = '<option value="">--SVP, choisissez une couleur --</option>'
+
         for (let i in colors) {
             allColors += `<option value="${value.colors[i]}">${value.colors[i]}</option>`
         }

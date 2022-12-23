@@ -23,9 +23,7 @@ function getCart() {
   return (cart != null) ? JSON.parse(cart) : [];
 } */
 
-// supprimer un article du papnier
-
-
+// supprimer un article du panier
 
 function removeArticle(article) {
   let cart = getCart();
@@ -352,7 +350,7 @@ city.addEventListener("change", function() {
 address.addEventListener("change", function() {
   let msgErr = document.getElementById("addressErrorMsg");
   if (isValidAddress(address.value) == false) {
-    msgErr.innerText = `format d'adresse accepté, exemple : 6 Rue Saint-Jean`
+    msgErr.innerText = `format d'adresse incorrect. format attendu : 6 Rue Saint-Jean`
   } else {
     msgErr.innerText = "Adresse valide"
   }
@@ -416,11 +414,9 @@ function sendcommand(e) {
 
     } else {
 
-
       // appelle de la fonction permettant de recupérer les donnée du formulaire
       getContact();
       
-
       // appelle de la fonction qui permet de creer le tableau products-ID
       getCartId();
       if (products.length == 0) {
@@ -460,5 +456,5 @@ function sendcommand(e) {
 }
 
 
-// on ajout Event envoi du formulaire sur l'input !
+// on ajoute Event envoi du formulaire sur l'input !
 document.getElementById("order").addEventListener("click", sendcommand);
